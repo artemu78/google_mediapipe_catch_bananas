@@ -6,6 +6,7 @@ import Header from './components/Header';
 import VirtualCursor from './components/VirtualCursor';
 import Loader from './components/Loader';
 import { HandLandmarkerResult, Gesture, Fruit, FruitType } from './types';
+import packageJson from './package.json';
 
 // Base64 encoded audio files
 const CATCH_SOUND = 'data:audio/wav;base64,UklGRlgCAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQCAAA7Nz5AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWYAWlpZWFhXV1RTUlFQT0xLR0ZFRENCQUA/PDs5NzU0MzIxMC8uLQorKScoJyYlJCMhICAfHh0cGxoZGBcWFRQT vigenteBAwICAQEB/v7+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5';
@@ -28,6 +29,11 @@ const App: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const prevGestureRef = useRef<Gesture>('NONE');
+
+    // Log version on mount
+    useEffect(() => {
+        console.log(`🍌 Catch Bananas v${packageJson.version}`);
+    }, []);
     const catchSoundRef = useRef<HTMLAudioElement>(null);
     const levelUpSoundRef = useRef<HTMLAudioElement>(null);
     const missSoundRef = useRef<HTMLAudioElement>(null);
