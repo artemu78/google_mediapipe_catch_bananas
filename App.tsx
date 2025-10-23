@@ -23,7 +23,7 @@ const App: React.FC = () => {
     const [fruits, setFruits] = useState<Fruit[]>([]);
     const [totalBananasSpawned, setTotalBananasSpawned] = useState(0);
     const [speedLevel, setSpeedLevel] = useState(1);
-    
+
     const gameLoopRef = useRef<number>();
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -49,7 +49,7 @@ const App: React.FC = () => {
             }
         }
     }, []);
-    
+
     const { isLoading, detectedGesture, cursorPosition, startHandDetection } = useHandLandmarker({ onResults });
 
     const enableCamera = async () => {
@@ -60,7 +60,7 @@ const App: React.FC = () => {
             if (videoRef.current) {
                 const video = videoRef.current;
                 video.srcObject = stream;
-                
+
                 const onPlaying = () => {
                     if (video) {
                         startHandDetection(video);
@@ -68,7 +68,7 @@ const App: React.FC = () => {
                         video.removeEventListener('playing', onPlaying);
                     }
                 };
-                
+
                 video.addEventListener('playing', onPlaying);
             }
         } catch (err) {
@@ -76,7 +76,7 @@ const App: React.FC = () => {
             setError("Could not access webcam. Please check permissions and try again.");
         }
     };
-    
+
     const stopGameAndReset = () => {
         if (gameLoopRef.current) {
             cancelAnimationFrame(gameLoopRef.current);
@@ -107,7 +107,7 @@ const App: React.FC = () => {
             if (Math.random() < 0.03) { // Control spawn rate
                 const fruitTypes: FruitType[] = ['apple', 'banana', 'strawberry'];
                 const type = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
-                
+
                 if (type === 'banana') {
                     setTotalBananasSpawned(prev => prev + 1);
                 }
@@ -124,7 +124,7 @@ const App: React.FC = () => {
 
             gameLoopRef.current = requestAnimationFrame(gameLoop);
         };
-        
+
         if (isCameraEnabled && isGameRunning) {
             gameLoopRef.current = requestAnimationFrame(gameLoop);
         }
@@ -146,7 +146,7 @@ const App: React.FC = () => {
                 if (wasCatchSuccessful) return true; // Only catch one fruit per frame
 
                 const distance = Math.sqrt(
-                    Math.pow(cursorX - fruit.x, 2) + 
+                    Math.pow(cursorX - fruit.x, 2) +
                     Math.pow(cursorPosition.y - fruit.y, 2)
                 );
 
@@ -191,13 +191,13 @@ const App: React.FC = () => {
         // Count pinch gestures and play MISS sound on new pinch
         if (isGameRunning && detectedGesture === 'PINCH' && prevGestureRef.current !== 'PINCH') {
             setPinchCount(prev => prev + 1);
-            
+
             // Check if this new pinch is a miss
             let isCatch = false;
             if (cursorPosition) {
                 const cursorX = isMirrored ? 1 - cursorPosition.x : cursorPosition.x;
                 for (const fruit of fruits) {
-                     const distance = Math.sqrt(
+                    const distance = Math.sqrt(
                         Math.pow(cursorX - fruit.x, 2) +
                         Math.pow(cursorPosition.y - fruit.y, 2)
                     );
@@ -269,8 +269,8 @@ const App: React.FC = () => {
                     ></video>
 
                     {!isCameraEnabled ? (
-                         <div className="absolute inset-0 flex items-center justify-center text-center">
-                             {error ? (
+                        <div className="absolute inset-0 flex items-center justify-center text-center">
+                            {error ? (
                                 <p className="text-red-400 mb-4">{error}</p>
                             ) : (
                                 <div>
@@ -312,7 +312,7 @@ const App: React.FC = () => {
                                         <p className="text-6xl mb-4">🖐️</p>
                                         <h2 className="text-3xl font-bold text-white">Raise your hand to start</h2>
                                     </div>
-                                    
+
                                     <div className="bg-slate-800/50 p-6 rounded-lg shadow-xl backdrop-blur-sm">
                                         <h3 className="text-2xl font-bold text-cyan-400 mb-2">Before You Begin! 🎯</h3>
                                         <p className="text-slate-300 mb-4 max-w-sm">
@@ -324,9 +324,9 @@ const App: React.FC = () => {
                                             aria-label="Mirror camera feed"
                                         >
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                                                <path d="M12 22V2"/>
-                                                <path d="M8 7L4 12L8 17"/>
-                                                <path d="M16 7L20 12L16 17"/>
+                                                <path d="M12 22V2" />
+                                                <path d="M8 7L4 12L8 17" />
+                                                <path d="M16 7L20 12L16 17" />
                                             </svg>
                                             Mirror Pinch Cursor
                                         </button>

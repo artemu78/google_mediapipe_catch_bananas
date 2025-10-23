@@ -14,6 +14,8 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
 
     const animationFrameId = useRef<number>();
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const lastUpdateTime = useRef<number>(0);
+    const THROTTLE_MS = 33; // ~60fps, adjust to 33 for ~30fps if needed
 
     const initializeHandLandmarker = useCallback(async () => {
         try {
@@ -30,7 +32,8 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
             });
             setHandLandmarker(marker);
             setIsLoading(false);
-        } catch(e) {
+            console.log("Hand Landmarker initialized");
+        } catch (e) {
             console.error("Failed to initialize Hand Landmarker", e);
         }
     }, []);
@@ -42,7 +45,7 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
             if (animationFrameId.current) {
                 cancelAnimationFrame(animationFrameId.current);
             }
-            if(handLandmarker) {
+            if (handLandmarker) {
                 handLandmarker.close();
             }
         };
@@ -55,13 +58,13 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
         const middleTip = landmarks[12];
         const ringTip = landmarks[16];
         const pinkyTip = landmarks[20];
-        
+
         // Pinch detection (highest priority)
         const pinchDistance = Math.sqrt(
             Math.pow(thumbTip.x - indexTip.x, 2) +
             Math.pow(thumbTip.y - indexTip.y, 2)
         );
-        
+
         if (pinchDistance < 0.06) { // Threshold for pinch
             return 'PINCH';
         }
@@ -75,7 +78,7 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
         if (isIndexUp && isMiddleUp && isRingUp && isPinkyUp) {
             return 'RAISED_HAND';
         }
-        
+
         // Pointing detection
         if (indexTip.y < middleTip.y) {
             return 'POINT';
@@ -100,10 +103,15 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
 
             const gesture = detectGesture(landmarks);
             setDetectedGesture(gesture);
-            
-            // Use index finger tip for cursor
-            const indexFingerTip = landmarks[8];
-            setCursorPosition({ x: indexFingerTip.x, y: indexFingerTip.y });
+
+            // Throttle cursor position updates
+            const now = performance.now();
+            if (now - lastUpdateTime.current >= THROTTLE_MS) {
+                const indexFingerTip = landmarks[8];
+                const newPosition = { x: indexFingerTip.x, y: indexFingerTip.y };
+                setCursorPosition(newPosition);
+                lastUpdateTime.current = now;
+            }
         } else {
             setDetectedGesture('NONE');
             setCursorPosition(null);
@@ -118,13 +126,13 @@ export const useHandLandmarker = ({ onResults }: UseHandLandmarkerProps) => {
             predictWebcam();
         }
     }, [isLoading, handLandmarker, predictWebcam]);
-    
+
     // Auto-start prediction when model is loaded and video is ready
     useEffect(() => {
         if (!isLoading && handLandmarker && videoRef.current) {
             predictWebcam();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading, handLandmarker]);
 
     return { isLoading, detectedGesture, cursorPosition, startHandDetection };

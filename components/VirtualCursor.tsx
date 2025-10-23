@@ -32,7 +32,7 @@ const VirtualCursor: React.FC<VirtualCursorProps> = ({ position, gesture, isMirr
     // Adjust the x-coordinate based on the mirroring setting
     const displayX = (isMirrored ? 1 - position.x : position.x) * 100;
     const displayY = position.y * 100;
-
+    console.log(`left:${displayX} top:${displayY}`)
     return (
         <>
             <div
