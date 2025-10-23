@@ -1,0 +1,7 @@
+{
+  "name": "Catch bananas with your gestures",
+  "description": "1 Turn on your camera\n2 Align cursor with your fingers\n\nCatch falling bananas pinching them with indes and big thumbs.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
