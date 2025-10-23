@@ -19,3 +19,6 @@ steps:
 
 images:
  - 'gcr.io/gen-lang-client-0997961595/catch-bananas-with-your-gestures'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
